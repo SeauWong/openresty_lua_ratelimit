@@ -1,9 +1,16 @@
 version: '2.1'
 
 services:
-  nginx:
+  nginxlb:
+    image: openresty/openresty:xenial
+    volumes:
+      - "./nginxlb.conf:/usr/local/openresty/nginx/conf/nginx.conf"
+    ports:
+      - "8080:8080"
+  nginx1:
     build:
       context: .
+      image: wongcu/nginxlua:latest 
     volumes:
       - "./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf"
       - "./src/:/lua/src/"
@@ -12,8 +19,18 @@ services:
     links:
       - redis_cluster
     ports:
-      - "8080:8080"
-
+      - "8080"
+   nginx2:
+    image: wongcu/nginxlua:latest 
+    volumes:
+      - "./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf"
+      - "./src/:/lua/src/"
+    depends_on:
+      - redis_cluster
+    links:
+      - redis_cluster
+    ports:
+      - "8080"
   test:
     command: busted -c
     environment:

@@ -2,7 +2,8 @@ version: '2.1'
 
 services:
   nginxlb:
-    image: openresty/openresty:xenial
+    build:
+      context: .
     volumes:
       - "./nginxlb.conf:/usr/local/openresty/nginx/conf/nginx.conf"
     ports:
@@ -10,7 +11,6 @@ services:
   nginx1:
     build:
       context: .
-      image: wongcu/nginxlua:latest 
     volumes:
       - "./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf"
       - "./src/:/lua/src/"
@@ -20,8 +20,9 @@ services:
       - redis_cluster
     ports:
       - "8080"
-   nginx2:
-    image: wongcu/nginxlua:latest 
+  nginx2:
+    build:
+      context: .
     volumes:
       - "./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf"
       - "./src/:/lua/src/"
